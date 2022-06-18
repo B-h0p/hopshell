@@ -1,11 +1,10 @@
 mod functions;
 mod commands;
-const VERSION : &str = "authored by meeee :3 [Version 0.1.0]";
+const VERSION : &str = "authored by Bhop, 2022 :3 [Version 0.3.0]";
 
 fn main() {
     functions::new_bash(VERSION.to_string());
     loop {
-        //LOCAL ENV
         let dir : String = functions::get_dir();
         let instruction : String = functions::command_new_line(dir);
         if instruction.to_lowercase() == "kill".to_string() {break} //stupid edge case v1
@@ -25,18 +24,24 @@ fn match_command(arg : &Vec<&str>) -> bool {
     let mut expression = arg.clone();
     expression.remove(0); 
         match user_command.as_str() {
-            "cls" | "clear" => { //this is kinda sloppy
+            "cls" | "clear" => { //clears the interface
                 functions::new_bash(VERSION.to_string());
                 return true}, 
-            "echo" | "print" => {
+            "echo" | "print" => { //prints input to screen
                 commands::echo(expression);
                 return true}  
-            "math" | "calc" | "eval" => {
+            "math" | "calc" | "eval" => { //basic arithmetic
                 commands::math_eval(expression);
                 return true}
-            "ls" | "dir" | "sdir" => {
+            "ls" | "dir" | "sdir" => { //lists directory contents
                 commands::list_dir();
                 return true}
-            _other => return false
+            "cd" | "cdir" => { //change directory
+                commands::change_dir(expression);
+                return true}
+            "newf" | "makf" | "makef" => { //make new FILE
+                commands::new_file(expression);
+                return true} //apparently I cant abstract these return trues, not without an overhaul at least
+            _other => return false,
         }
 }
