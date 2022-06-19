@@ -11,8 +11,7 @@ pub fn get_dir() -> String {
     let mut dir : String = "".to_string();
     for x in dir_split {dir.push_str(x);}
     dir.push_str("> ");
-    return dir;
-}
+    return dir;}
 
 pub fn command_new_line(dir : String) -> String {
     print!("{}", dir);
