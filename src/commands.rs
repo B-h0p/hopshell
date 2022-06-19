@@ -106,33 +106,45 @@ pub fn change_dir(dir : Vec<&str>) {
     else {println!("A directory is needed as an argument. Try again");}
 }
 
-pub fn new_file(filename : Vec<&str>) {
+pub fn new_item(filename : Vec<&str>, itype : &str) { //TODO -REFACTOR THIS TRASH
     if filename.len() != 0 {
         let mut file_string : String = String::from("./");
         for x in filename {
             file_string.push_str(x);
             file_string.push_str(" ");}
-        file_string.pop();
+        file_string.pop(); file_string = file_string.to_lowercase();
 
         let mut directory : String = functions::get_dir(); directory.pop(); directory.pop();
         let mut file_vec : Vec<String> = Vec::from([]);         
         let filenames = fs::read_dir(&directory).unwrap();
         for x in filenames {
-            let file : String = x.unwrap().file_name().to_str().unwrap().to_string();
+            let file : String = x.unwrap().file_name().to_str().unwrap().to_string().to_lowercase();
             file_vec.push(file);} //used to check if the file we are making doesnt exist
 
         let mut file_string_cleaned : String = file_string.clone();
         file_string_cleaned.remove(0); file_string_cleaned.remove(0);
         if !(file_vec.contains(&file_string_cleaned)) {
-        if !(&file_string.contains(".")) {println!("WARNING: no file format presented");}
-        if (file_string.chars().into_iter().collect::<Vec<char>>()[0] == '.') && (file_string.matches(".").count() == 1) {
-            println!("WARNING: file has no assigned name");}
-        if file_string.chars().into_iter().collect::<Vec<char>>()[file_string.len()-1] == '.' {
-            println!("WARNING: files ending in '.' are not recommended");}
-        File::create(&file_string).expect("new file couldn't be created.");
-        println!("{} created in current directory.", file_string); 
+            if itype == "f" { //lots of semantics for this lol
+                if !(&file_string_cleaned.contains(".")) {println!("WARNING: file has no assigned type");}
+                if (file_string_cleaned.chars().into_iter().collect::<Vec<char>>()[0] == '.') && 
+                   (file_string_cleaned.matches(".").count() == 1) {
+                    println!("WARNING: file has no assigned name");}
+                if file_string.chars().into_iter().collect::<Vec<char>>()[file_string.len()-1] == '.' {
+                    println!("WARNING: files ending in '.' are ignored");}
+                let is_ok = File::create(&file_string);
+                match is_ok {
+                    Ok(_) =>  println!("{} created in current directory.", file_string),
+                    Err(_) => println!("new file couldn't be created.")}
+            }
+            else if itype == "d" { //as long as the directory is titled its cool
+                let is_ok = fs::create_dir(&file_string);
+                match is_ok {
+                    Ok(_) => println!("created {} as a new directory.", file_string),
+                    Err(_) => println!("new directory couldn't be created")}
+            }
+            else {println!("please stop tinkering with my code :(");}
         }
         else {println!("'{}' already exists in this directory. Try again.", file_string);}
     }
-    else {println!("new file requires a name. Try again.");}
+    else {println!("new items requires a name. Try again.");}
 }

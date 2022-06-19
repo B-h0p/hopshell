@@ -1,13 +1,13 @@
 mod functions;
 mod commands;
-const VERSION : &str = "authored by Bhop, 2022 :3 [Version 0.3.0]";
+const VERSION : &str = "authored by Bhop, 2022 :3 [Version 0.3.3]";
 
 fn main() {
     functions::new_bash(VERSION.to_string());
     loop {
         let dir : String = functions::get_dir();
         let instruction : String = functions::command_new_line(dir);
-        if instruction.to_lowercase() == "kill".to_string() {break} //stupid edge case v1
+        if instruction.to_lowercase() == "kill".to_string() {break} //stupid edge case v1 - FIX THIS
         if instruction != "".to_string() {
             let command : Vec<&str> = instruction.split(" ").collect::<Vec<&str>>();
             if !match_command(&command) {
@@ -40,7 +40,10 @@ fn match_command(arg : &Vec<&str>) -> bool {
                 commands::change_dir(expression);
                 return true}
             "newf" | "makf" | "makef" => { //make new FILE
-                commands::new_file(expression);
+                commands::new_item(expression, "f");
+                return true}
+            "newd" | "makd" | "maked" => { //make new DIR
+                commands::new_item(expression, "d");
                 return true} //apparently I cant abstract these return trues, not without an overhaul at least
             _other => return false,
         }
