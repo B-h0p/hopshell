@@ -142,7 +142,7 @@ pub fn new_item(filename : Vec<&str>, itype : &str) { //TODO -REFACTOR THIS TRAS
                     Ok(_) => println!("created {} as a new directory.", file_string),
                     Err(_) => println!("new directory couldn't be created")}
             }
-            else {println!("please stop tinkering with my code :(");}
+            else {println!("specified item format not found");}
         }
         else {println!("'{}' already exists in this directory. Try again.", file_string);}
     }
