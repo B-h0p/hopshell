@@ -142,9 +142,44 @@ pub fn new_item(filename : Vec<&str>, itype : &str) { //TODO -REFACTOR THIS TRAS
                     Ok(_) => println!("created {} as a new directory.", file_string),
                     Err(_) => println!("new directory couldn't be created")}
             }
-            else {println!("specified item format not found");}
+            else {println!("please stop tinkering with my code :(");}
         }
         else {println!("'{}' already exists in this directory. Try again.", file_string);}
     }
     else {println!("new items requires a name. Try again.");}
+}
+
+pub fn delete_item(item : Vec<&str>) {
+    if item.len() != 0 {
+        let mut item_name : String = String::from("");
+        for x in item {
+            item_name.push_str(x);
+            item_name.push_str(" ");}
+        item_name.pop();
+
+        let mut directory : String = functions::get_dir(); directory.pop(); directory.pop();
+        let mut file_vec : Vec<String> = Vec::from([]);         
+        let filenames = fs::read_dir(&directory).unwrap();
+        for x in filenames {
+            let file : String = x.unwrap().file_name().to_str().unwrap().to_string().to_lowercase();
+            file_vec.push(file);}
+        if file_vec.contains(&item_name.to_lowercase()) {
+            let mut file_to_delete : String = String::from("./");
+            file_to_delete.push_str(&item_name);
+            let mut user_confirmation : String = String::from("");
+            while user_confirmation != "y".to_string() && user_confirmation != "n".to_string() {
+                println!("delete {}? (y/N)", item_name);
+                user_confirmation = functions::get_string(true).to_lowercase();
+            }
+            if user_confirmation == "y".to_string() {
+                if metadata(&file_to_delete).unwrap().is_dir() {
+                    fs::remove_dir(file_to_delete).expect("Err: Failed to delete directory");}
+                else {fs::remove_file(file_to_delete).expect("Err: Failed to delete file")}
+                println!("{} deleted.", item_name)
+            }
+        }
+        else {println!("{} does not exist in this directory. Try again", item_name);}
+       
+    }
+    else {println!("you need to specify an item to delete");}
 }

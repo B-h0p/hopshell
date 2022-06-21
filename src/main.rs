@@ -1,6 +1,6 @@
 mod functions;
 mod commands;
-const VERSION : &str = "authored by Bhop, 2022 :3 [Version 0.3.3]";
+const VERSION : &str = "authored by Bhop, 2022 :3 [Version 0.4.0]";
 
 fn main() {
     functions::new_bash(VERSION.to_string());
@@ -44,6 +44,9 @@ fn match_command(arg : &Vec<&str>) -> bool {
                 return true}
             "newd" | "makd" | "maked" => { //make new DIR
                 commands::new_item(expression, "d");
+                return true}
+            "del" | "rmv" => { //delete any item
+                commands::delete_item(expression);
                 return true} //apparently I cant abstract these return trues, not without an overhaul at least
             _other => return false,
         }
