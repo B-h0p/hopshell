@@ -107,16 +107,10 @@ pub fn new_item(filename : Vec<&str>, itype : &str) { //TODO -REFACTOR THIS TRAS
             file_string.push_str(x);
             file_string.push_str(" ");}
         file_string.pop(); file_string = file_string.to_lowercase();
-
-        let directory : String = functions::get_dir();
-        let mut file_vec : Vec<String> = Vec::from([]);         
-        let filenames = fs::read_dir(&directory).unwrap();
-        for x in filenames {
-            let file : String = x.unwrap().file_name().to_str().unwrap().to_string().to_lowercase();
-            file_vec.push(file);} //used to check if the file we are making doesnt exist
-
         let mut file_string_cleaned : String = file_string.clone();
-        file_string_cleaned.remove(0); file_string_cleaned.remove(0);
+        file_string_cleaned.remove(0); file_string_cleaned.remove(0); //removes the './' - kinda poor
+
+        let file_vec : Vec<String> = functions::generate_files_vec(true);
         if !(file_vec.contains(&file_string_cleaned)) {
             if itype == "f" { //lots of semantics for this lol
                 if !(&file_string_cleaned.contains(".")) {println!("WARNING: file has no assigned type");}
@@ -151,12 +145,7 @@ pub fn delete_item(item : Vec<&str>) {
             item_name.push_str(" ");}
         item_name.pop();
 
-        let directory : String = functions::get_dir();
-        let mut file_vec : Vec<String> = Vec::from([]);         
-        let filenames = fs::read_dir(&directory).unwrap();
-        for x in filenames {
-            let file : String = x.unwrap().file_name().to_str().unwrap().to_string().to_lowercase();
-            file_vec.push(file);}
+        let file_vec : Vec<String> = functions::generate_files_vec(true);
         if file_vec.contains(&item_name.to_lowercase()) {
             let mut file_to_delete : String = String::from("./");
             file_to_delete.push_str(&item_name);

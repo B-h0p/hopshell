@@ -1,6 +1,6 @@
 mod functions;
 mod commands;
-const VERSION : &str = "authored by Bhop, 2022 :3 [Version 0.4.2]";
+const VERSION : &str = "authored by Bhop, 2022 :3 [Version 0.4.3]";
 
 fn main() {
     functions::new_bash(VERSION.to_string());
@@ -22,32 +22,18 @@ fn main() {
 fn match_command(arg : &Vec<&str>) -> bool {
     let user_command : String = arg[0].to_string().to_lowercase();
     let mut expression = arg.clone();
-    expression.remove(0); 
+    expression.remove(0); //arguments for certain (upcoming commands) - trust me, this wasnt dumb!
+    let mut valid_command : bool = true; 
         match user_command.as_str() {
-            "cls" | "clear" => { //clears the interface
-                functions::new_bash(VERSION.to_string());
-                return true}, 
-            "echo" | "print" => { //prints input to screen
-                commands::echo(expression);
-                return true}  
-            "math" | "calc" | "eval" => { //basic arithmetic
-                commands::math_eval(expression);
-                return true}
-            "ls" | "dir" | "sdir" => { //lists directory contents
-                commands::list_dir();
-                return true}
-            "cd" | "cdir" => { //change directory
-                commands::change_dir(expression);
-                return true}
-            "newf" | "makf" | "makef" => { //make new FILE
-                commands::new_item(expression, "f");
-                return true}
-            "newd" | "makd" | "maked" => { //make new DIR
-                commands::new_item(expression, "d");
-                return true}
-            "del" | "rmv" => { //delete any item
-                commands::delete_item(expression);
-                return true} //apparently I cant abstract these return trues, not without an overhaul at least
-            _other => return false,
+            "cls" | "clear" => functions::new_bash(VERSION.to_string()), //clears the screen
+            "echo" | "print" => commands::echo(expression), //prints to command line
+            "math" | "calc" | "eval" => commands::math_eval(expression), //evaluates math expressions
+            "ls" | "dir" | "sdir" => commands::list_dir(), //lists directory contents
+            "cd" | "cdir" => commands::change_dir(expression), //changes directory
+            "newf" | "makf" | "makef" => commands::new_item(expression, "f"), //creates file
+            "newd" | "makd" | "maked" => commands::new_item(expression, "d"), //creates directory
+            "del" | "rmv" => commands::delete_item(expression), //deletes item
+            _other => valid_command = false, //non-existent command
         }
+    return valid_command;
 }

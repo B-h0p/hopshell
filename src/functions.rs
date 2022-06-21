@@ -1,4 +1,4 @@
-use std::{io::{self, Write}, env};
+use std::{io::{self, Write}, env, fs};
 use clearscreen;
 
 pub fn new_bash(msg : String) {
@@ -13,7 +13,7 @@ pub fn get_dir() -> String {
     return dir;
 }
 
-pub fn command_new_line(dir : String) -> String {
+pub fn command_new_line(dir : String) -> String { //glorified get_string lol
     print!("{}", dir);
     io::stdout().flush().unwrap();
     let mut output : String = String::new();
@@ -38,3 +38,14 @@ pub fn get_string(remove_opening_spaces : bool) -> String {
         }}
         return output
     }
+
+pub fn generate_files_vec(to_lowercase : bool) -> Vec<String> { //creates a vector of the files which exist in the current dir
+    let directory : String = get_dir();
+    let mut file_vec : Vec<String> = Vec::from([]);         
+    let filenames = fs::read_dir(&directory).unwrap();
+    for x in filenames {
+        let mut file : String = x.unwrap().file_name().to_str().unwrap().to_string();
+        if to_lowercase {file = file.to_lowercase();}
+        file_vec.push(file);}
+    return file_vec;
+}
