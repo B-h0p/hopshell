@@ -1,6 +1,6 @@
 use crate::functions;
-use std::fs::{self, File, metadata};
-use std::env;
+use std::{fs::{self, File, metadata},env};
+use meval;
 
 pub fn echo(msg : Vec<&str>) {
     if msg.len() > 0 {
@@ -15,48 +15,44 @@ pub fn echo(msg : Vec<&str>) {
 }
 
 pub fn math_eval(expression : Vec<&str>) {
-    if expression.len() > 0 {
+    if expression.len() > 0 { //expression needed
         let mut express_string : String = String::from("");
         for x in &expression {express_string.push_str(x)}
         let mut valid_expression : bool = true;
-        
-        { //CHECKS FOR A VALID EXPRESSION - TO BE REFACTORED
+    
+        { //CHECKS FOR A VALID EXPRESSION
             let expression_chars : Vec<char> = express_string.chars().collect();
             let mut contains_number : bool = false;
-            for x in 0..expression_chars.len() {
-                if !"0987654321+-/*()^".contains(expression_chars[x]) {valid_expression = false; break;}
-                if "0987654321".contains(expression_chars[x]) {contains_number = true;}
-            }
-            if !contains_number {valid_expression = false;}
-
             let mut lbrace_count : u32 = 0;
             let mut rbrace_count : u32 = 0;
             for x in 0..expression_chars.len() {
+                if !"0987654321+-/*()^".contains(expression_chars[x]) {valid_expression = false; break;} //only good symbols allowed
+                if "0987654321".contains(expression_chars[x]) {contains_number = true;} //a number is AT LEAST needed
                 if expression_chars[x] == '(' {
                     lbrace_count = lbrace_count + 1;
                     if x != 0 {
                         if !"+-*/^(".contains(expression_chars[x-1]) {valid_expression = false; break;}
-                    }}
+                    }}//a number can't immeadietaly preceed a open bracket - it has to be explicit
                 if expression_chars[x] == ')' {
                     rbrace_count = rbrace_count + 1;
                     if x != expression_chars.len()-1 {
-                        if !"+-*/^)".contains(expression_chars[x+1]) {valid_expression = false; break;}
+                        if !"+-*/^)".contains(expression_chars[x+1]) {valid_expression = false; break;} //see ln 35
                     }}
-                if rbrace_count > lbrace_count {valid_expression = false; break;}
-                //so we don't deal with empty brackets in the future
-                if x != expression_chars.len() - 1 {
-                    if (expression_chars[x] == '(') && (expression_chars[x+1] == ')') {valid_expression = false; break;}
-                }
+                if rbrace_count > lbrace_count {valid_expression = false; break;} //at all points '('.len >= ')'.len
             }
-            if lbrace_count != rbrace_count {valid_expression = false;}
+            if !contains_number {valid_expression = false;}
+            if lbrace_count != rbrace_count {valid_expression = false;} //bracket count must be equal
 
             if !("0987654321(-".contains(expression_chars[0])) || ("+-*/^".contains(expression_chars[expression_chars.len()-1])) {
-                valid_expression = false;}
+                valid_expression = false;} //must begin with a (+|-)number/ bracket, and end with a digit or bracket
             for x in 0..expression_chars.len()-1 {
+                if (expression_chars[x] == '(') && (expression_chars[x+1] == ')') {valid_expression = false; break;}
+                //empty brackets not allowed
                 if "+-*/^".contains(expression_chars[x]) && !("0987654321(-".contains(expression_chars[x+1])) {
-                    valid_expression = false; break;}
+                    valid_expression = false; break;} //math operator needs to follow something reasonable
             }
-        } //expression is now valid
+        } //expression is now (presumably) valid
+        
         if !valid_expression {println!("'{}' is not recognised as a valid expression. Try again.", express_string);}  
         else {
             let ans : f64 = meval::eval_str(&express_string).unwrap(); //THANK YOU REKKA!!
@@ -67,23 +63,21 @@ pub fn math_eval(expression : Vec<&str>) {
 }
 
 pub fn list_dir() {
-    let mut directory : String = functions::get_dir(); //dont really like the new dependency but whatever...
-    directory.pop(); directory.pop(); //removes the tailing '>'
-    let mut directory_temp : String = directory.clone(); directory_temp.pop();
-        let filenames = fs::read_dir(&directory).unwrap();
-        for x in filenames {
-            let file_lineage : String = x.unwrap().file_name().to_str().unwrap().to_string();
-            let valid_check = metadata(&file_lineage);
-            let is_ok : bool;
-            match valid_check {
-                Ok(_) => is_ok = true,
-                Err(_) => is_ok = false
-            }
-            if is_ok { //only files which can be tampered with *safely* are shown
-                if metadata(&file_lineage).unwrap().is_dir() {println!("    |-> <DIR>    {}", file_lineage)}
-                else {println!("    |-> {}", file_lineage)};
-            }
+    let directory : String = functions::get_dir();
+    let filenames = fs::read_dir(&directory).unwrap();
+    for x in filenames {
+        let file_lineage : String = x.unwrap().file_name().to_str().unwrap().to_string();
+        let valid_check = metadata(&file_lineage);
+        let is_ok : bool;
+        match valid_check {
+            Ok(_) => is_ok = true,
+            Err(_) => is_ok = false
         }
+        if is_ok { //only files which can be tampered with *safely* are shown
+            if metadata(&file_lineage).unwrap().is_dir() {println!("    |-> <DIR>    {}", file_lineage)}
+            else {println!("    |-> {}", file_lineage)};
+        }
+    }
 }
 
 pub fn change_dir(dir : Vec<&str>) {
@@ -108,13 +102,13 @@ pub fn change_dir(dir : Vec<&str>) {
 
 pub fn new_item(filename : Vec<&str>, itype : &str) { //TODO -REFACTOR THIS TRASH
     if filename.len() != 0 {
-        let mut file_string : String = String::from("./");
+        let mut file_string : String = String::from("./"); //make cleaner TODO
         for x in filename {
             file_string.push_str(x);
             file_string.push_str(" ");}
         file_string.pop(); file_string = file_string.to_lowercase();
 
-        let mut directory : String = functions::get_dir(); directory.pop(); directory.pop();
+        let directory : String = functions::get_dir();
         let mut file_vec : Vec<String> = Vec::from([]);         
         let filenames = fs::read_dir(&directory).unwrap();
         for x in filenames {
@@ -142,7 +136,7 @@ pub fn new_item(filename : Vec<&str>, itype : &str) { //TODO -REFACTOR THIS TRAS
                     Ok(_) => println!("created {} as a new directory.", file_string),
                     Err(_) => println!("new directory couldn't be created")}
             }
-            else {println!("please stop tinkering with my code :(");}
+            else {println!("you found the fortnite easter egg! ...thats all");} //to prevent panics lol
         }
         else {println!("'{}' already exists in this directory. Try again.", file_string);}
     }
@@ -157,7 +151,7 @@ pub fn delete_item(item : Vec<&str>) {
             item_name.push_str(" ");}
         item_name.pop();
 
-        let mut directory : String = functions::get_dir(); directory.pop(); directory.pop();
+        let directory : String = functions::get_dir();
         let mut file_vec : Vec<String> = Vec::from([]);         
         let filenames = fs::read_dir(&directory).unwrap();
         for x in filenames {
@@ -173,8 +167,8 @@ pub fn delete_item(item : Vec<&str>) {
             }
             if user_confirmation == "y".to_string() {
                 if metadata(&file_to_delete).unwrap().is_dir() {
-                    fs::remove_dir(file_to_delete).expect("Err: Failed to delete directory");}
-                else {fs::remove_file(file_to_delete).expect("Err: Failed to delete file")}
+                    fs::remove_dir(file_to_delete).expect("Err: Failed to delete directory");} //TO-FIX
+                else {fs::remove_file(file_to_delete).expect("Err: Failed to delete file")} //TO-FIX
                 println!("{} deleted.", item_name)
             }
         }

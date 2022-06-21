@@ -1,17 +1,17 @@
 mod functions;
 mod commands;
-const VERSION : &str = "authored by Bhop, 2022 :3 [Version 0.4.0]";
+const VERSION : &str = "authored by Bhop, 2022 :3 [Version 0.4.2]";
 
 fn main() {
     functions::new_bash(VERSION.to_string());
     loop {
-        let dir : String = functions::get_dir();
+        let mut dir : String = functions::get_dir(); dir.push_str("> "); //for the aesthetic
         let instruction : String = functions::command_new_line(dir);
-        if instruction.to_lowercase() == "kill".to_string() {break} //stupid edge case v1 - FIX THIS
         if instruction != "".to_string() {
-            let command : Vec<&str> = instruction.split(" ").collect::<Vec<&str>>();
+            let command : Vec<&str> = instruction.split(" ").collect::<Vec<&str>>(); //splitting by string allows us to add parameters
+            if command[0].to_lowercase() == "kill".to_string() {break} //stupid edge case v1
             if !match_command(&command) {
-                println!("'{}' is not a recognised command. Refer to hopshell's source code", command[0]);
+                println!("'{}' is not a recognised command. Refer to hopshell's 'help' command", command[0]);
                 println!("for more information.")
             }
             if !["cls".to_string(), "clear".to_string()].contains(&command[0].to_lowercase()) {println!("");} //stupid edge case v2

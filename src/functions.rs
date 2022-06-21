@@ -10,7 +10,6 @@ pub fn get_dir() -> String {
     let dir_split : Vec<&str> = dir_raw.split("").collect();
     let mut dir : String = "".to_string();
     for x in dir_split {dir.push_str(x);}
-    dir.push_str("> ");
     return dir;
 }
 
