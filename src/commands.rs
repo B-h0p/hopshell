@@ -166,3 +166,14 @@ pub fn delete_item(item : Vec<&str>) {
     }
     else {println!("you need to specify an item to delete");}
 }
+
+pub fn user_help(command_wargs : Vec<&str>) {
+    if command_wargs.len() != 0 {
+        match command_wargs[0] {
+            "echo" | "print" => println!("ECHO (or print) returns the users input-text to the console."),
+            //more...
+            _other => println!("{} is not a valid command. Try again.", command_wargs[0])
+        }
+    }
+    else {println!("AAAAAAAA");}
+}

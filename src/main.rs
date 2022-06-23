@@ -1,6 +1,6 @@
 mod functions;
 mod commands;
-const VERSION : &str = "authored by Bhop, 2022 :3 [Version 0.4.3]";
+const VERSION : &str = "authored by Bhop, 2022 :3 [Version 0.4.6]";
 
 fn main() {
     functions::new_bash(VERSION.to_string());
@@ -33,6 +33,7 @@ fn match_command(arg : &Vec<&str>) -> bool {
             "newf" | "makf" | "makef" => commands::new_item(expression, "f"), //creates file
             "newd" | "makd" | "maked" => commands::new_item(expression, "d"), //creates directory
             "del" | "rmv" => commands::delete_item(expression), //deletes item
+            "help" => commands::user_help(expression), //user docs
             _other => valid_command = false, //non-existent command
         }
     return valid_command;
