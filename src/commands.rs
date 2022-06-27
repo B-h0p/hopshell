@@ -170,10 +170,39 @@ pub fn delete_item(item : Vec<&str>) {
 pub fn user_help(command_wargs : Vec<&str>) {
     if command_wargs.len() != 0 {
         match command_wargs[0] {
-            "echo" | "print" => println!("ECHO (or print) returns the users input-text to the console."),
-            //more...
-            _other => println!("{} is not a valid command. Try again.", command_wargs[0])
+            "kill" => println!("KILL terminates the Hopshell console"),
+            "cls" | "clear" => println!("CLS (clear) will clear the console's user inputs and system outputs."),
+            "echo" | "print" => println!("ECHO (print) returns the users input-text to the console."),
+            "math" | "calc" | "eval" => {
+                println!("\nMATH (calc|eval) is a command which determines basic arithmetic expressions");
+                println!("OPERATIONAL KEY:");
+                println!("  '+' - Addition");
+                println!("  '-' - Subtraction");
+                println!("  '*' - Multiplication");
+                println!("  '/' - Division");
+                println!("  '^' - Exponentiation\n");
+                println!("MATH will handle brackets ('()'), but numbers cannot be multiplied immediately");
+                println!("by a fraction");
+            },
+            "ls" | "dir" | "sdir" => {println!("\nLS (dir|sdir) will print the contents of the current directory");
+                println!("to the console. Note that directories will be distinguished from files.");
+                println!("\nNOTE: directories critical to the OS will NOT be displayed")
+            },
+            "help" => println!("help is a command that helps the user. Use 'help help' to see help about help."),
+            _other => println!("'{}' is not a valid command. Try again.", command_wargs[0])
         }
     }
-    else {println!("AAAAAAAA");}
+    else {
+        println!("\nHopshell available expressions:");
+        println!("  kill: terminates Hopshell session");
+        println!("  cls|clear: clears the console display.");
+        println!("  echo|print: prints String to console");
+        println!("  math|calc|eval: calculates simple expression");
+        println!("  ls|dir|sdir: prints the current directory to console");
+        println!("  cd|cdir: changes the directory to the users specification");//TODO FROM HERE
+        println!("  newf|makf|makef: creates a new file named by the user");
+        println!("  newd|makd|maked: creates a new DIR named by the user");
+        println!("  del|rmv: deletes a specified DIR or file");                 //TO HERE
+        println!("\nuse 'help [command]' to see more information for a given prompt.");
+    }
 }
