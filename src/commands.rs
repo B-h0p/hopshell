@@ -107,18 +107,17 @@ pub fn new_item(filename : Vec<&str>, itype : &str) {
             file_string.push_str(x);
             file_string.push_str(" ");}
         file_string.pop(); file_string = file_string.to_lowercase();
-        let mut file_string_cleaned : String = file_string.clone();
-        file_string_cleaned.remove(0); file_string_cleaned.remove(0);
-            //removes the './' - stupid but whatever... it was optional anyways so feel free to delete the warning logic
         let file_vec : Vec<String> = functions::generate_files_vec(true);
-        if !(file_vec.contains(&file_string_cleaned)) {
-            if itype == "f" { //lots of semantics for this lol
-                if !(&file_string_cleaned.contains(".")) {println!("WARNING: file has no assigned type");}
-                if (file_string_cleaned.chars().into_iter().collect::<Vec<char>>()[0] == '.') && 
-                   (file_string_cleaned.matches(".").count() == 1) {
-                    println!("WARNING: file has no assigned name");}
-                if file_string.chars().into_iter().collect::<Vec<char>>()[file_string.len()-1] == '.' {
-                    println!("WARNING: files ending in '.' are ignored");}
+        let exists_in_dir : bool;
+            {let mut file_string_temp : String = file_string.clone(); //has to be cloned
+            file_string_temp.remove(0); file_string_temp.remove(0);
+            exists_in_dir = file_vec.contains(&file_string_temp);}
+        //vals are dropped, mitigating that problem we had earlier (not really removing it though - just not problematic)
+        if !exists_in_dir {
+            if itype == "f" { //this is MUCH cleaner now :)
+                if file_string.matches(".").count() == 1 {println!("WARNING: file has no assigned type");}
+                if file_string.starts_with("./.") && file_string.len() > 3 {println!("WARNING: file has no legible name");}
+                if file_string.ends_with(".") {println!("WARNING: files ending in '.' are ignored");}
                 let is_ok = File::create(&file_string);
                 match is_ok {
                     Ok(_) =>  println!("{} created in current directory.", file_string),
@@ -128,9 +127,9 @@ pub fn new_item(filename : Vec<&str>, itype : &str) {
                 let is_ok = fs::create_dir(&file_string);
                 match is_ok {
                     Ok(_) => println!("created {} as a new directory.", file_string),
-                    Err(_) => println!("new directory couldn't be created")}
+                    Err(_) => println!("new directory couldn't be created.")}
             }
-            else {println!("ERR - item couldn't be created.");} //users will at least see that something is up
+            else {println!("ERR - item couldn't be created.");} //this code should never have to be executed
         }
         else {println!("'{}' already exists in this directory. Try again.", file_string);}
     }
@@ -156,7 +155,7 @@ pub fn delete_item(item : Vec<&str>) {
             }
             if user_confirmation == "y".to_string() {
                 if metadata(&file_to_delete).unwrap().is_dir() {
-                    fs::remove_dir(file_to_delete).expect("Err: Failed to delete directory");} //TO-FIX
+                    fs::remove_dir(file_to_delete).expect("Err: Failed to delete directory");} //TO-FIX - match it
                 else {fs::remove_file(file_to_delete).expect("Err: Failed to delete file")} //TO-FIX
                 println!("{} deleted.", item_name)
             }
