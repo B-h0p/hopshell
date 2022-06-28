@@ -1,6 +1,6 @@
 [package]
 name = "hopshell"
-version = "1.0.1"
+version = "1.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -8,3 +8,6 @@ edition = "2021"
 [dependencies]
     clearscreen = "1.0.4"
     meval = "0.2"
+
+[build-dependencies]
+    winres = "0.1.12"
