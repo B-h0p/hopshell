@@ -37,7 +37,7 @@ pub fn get_string(remove_opening_spaces : bool) -> String {
                 output.remove(0);
         }}
         return output
-    }
+}
 
 pub fn generate_files_vec(to_lowercase : bool) -> Vec<String> { //creates a vector of the files which exist in the current dir
     let directory : String = get_dir();

@@ -44,7 +44,7 @@ pub fn math_eval(expression : Vec<&str>) {
             if lbrace_count != rbrace_count {valid_expression = false;} //bracket count must be equal
 
             if !("0987654321(-".contains(expression_chars[0])) || ("+-*/^".contains(expression_chars[expression_chars.len()-1])) {
-                valid_expression = false;} //must begin with a (+|-)number/ bracket, and end with a digit or bracket
+                valid_expression = false;} //must begin with a (+|-)number/ bracket, and end with a digit or close-bracket
             for x in 0..expression_chars.len()-1 {
                 if (expression_chars[x] == '(') && (expression_chars[x+1] == ')') {valid_expression = false; break;}
                 //empty brackets not allowed
@@ -71,7 +71,7 @@ pub fn list_dir() {
         let is_ok : bool;
         match valid_check {
             Ok(_) => is_ok = true,
-            Err(_) => is_ok = false
+            Err(_) => is_ok = false //returns this for OS-critical DIR's
         }
         if is_ok { //only files which can be tampered with *safely* are shown
             if metadata(&file_lineage).unwrap().is_dir() {println!("    |-> <DIR>    {}", file_lineage)}
@@ -93,7 +93,7 @@ pub fn change_dir(dir : Vec<&str>) {
         match is_ok {
             Err(_) => (), //ehh????
             Ok(_) => ()
-        } //i dont get rust...
+        } //i guess this only prevents a warning but ok
         let new_dir : String = functions::get_dir();
         if old_dir == new_dir {println!("'{}' is not a valid directory. Try again", dir_string);}
     }
@@ -108,7 +108,7 @@ pub fn new_item(filename : Vec<&str>, itype : &str) { //TODO -REFACTOR THIS TRAS
             file_string.push_str(" ");}
         file_string.pop(); file_string = file_string.to_lowercase();
         let mut file_string_cleaned : String = file_string.clone();
-        file_string_cleaned.remove(0); file_string_cleaned.remove(0); //removes the './' - kinda poor
+        file_string_cleaned.remove(0); file_string_cleaned.remove(0); //removes the './' - REALLY STUPID
 
         let file_vec : Vec<String> = functions::generate_files_vec(true);
         if !(file_vec.contains(&file_string_cleaned)) {
@@ -130,7 +130,7 @@ pub fn new_item(filename : Vec<&str>, itype : &str) { //TODO -REFACTOR THIS TRAS
                     Ok(_) => println!("created {} as a new directory.", file_string),
                     Err(_) => println!("new directory couldn't be created")}
             }
-            else {println!("ERR - item couldn't be created.");}
+            else {println!("ERR - item couldn't be created.");} //users will at least see that something is up
         }
         else {println!("'{}' already exists in this directory. Try again.", file_string);}
     }
@@ -161,74 +161,7 @@ pub fn delete_item(item : Vec<&str>) {
                 println!("{} deleted.", item_name)
             }
         }
-        else {println!("{} does not exist in this directory. Try again", item_name);}
-       
+        else {println!("{} does not exist in this directory. Try again", item_name);}  
     }
     else {println!("you need to specify an item to delete");}
-}
-
-pub fn user_help(command_wargs : Vec<&str>) {
-    if command_wargs.len() != 0 {
-        match command_wargs[0] {
-            "kill" => println!("KILL terminates the Hopshell console"),
-            "cls" | "clear" => println!("CLS (clear) will clear the console's user inputs and system outputs."),
-            "echo" | "print" => println!("ECHO (print) returns the users input-text to the console."),
-            "math" | "calc" | "eval" => {
-                println!("\nMATH (calc|eval) is a command which determines basic arithmetic expressions");
-                println!("OPERATIONAL KEY:");
-                println!("  '+' - Addition");
-                println!("  '-' - Subtraction");
-                println!("  '*' - Multiplication");
-                println!("  '/' - Division");
-                println!("  '^' - Exponentiation\n");
-                println!("MATH will handle brackets ('()'), but numbers cannot be multiplied immediately");
-                println!("by a fraction");
-            },
-            "ls" | "dir" | "sdir" => {
-                println!("\nLS (dir|sdir) will print the contents of the current directory");
-                println!("to the console. Note that directories will be distinguished from files.");
-                println!("\nNOTE: directories critical to the OS will NOT be displayed")
-            },
-            "cd" | "cdir" => {
-                println!("\nCD (cdir) will change the terminals directory to the users specification");
-                println!("cd will operate with the following syntax:");
-                println!("\n    - 'cd [DIR]'");
-                println!("\nNOTE: using '..' for the [DIR] argument will return a directory lower to hopshell");
-            },
-            "newf" | "makf" | "makef" => {
-                println!("\nNEWF (makf|makef) will create a new file according to the users specifications");
-                println!("newf will operate with the following syntax:");
-                println!("\n    - 'newf [FILE]'"); //NOTE: I may add a hidden argument soon with '-h' :)
-                println!("\nNOTE: created files are recommended to have an assigned name and filetype");
-            },
-            "newd" | "makd" | "maked" => {
-                println!("\nNEWD (makd|maked) will create a new directory according to the users specifications");
-                println!("newd will operate with the following syntax:");
-                println!("\n    - 'newd [DIR]'"); //NOTE: I may add a hidden argument soon with '-h' :)
-            },
-            "del" | "rmv" => {
-                println!("\nDEL (rmv) will delete a certain directory or file that is specified by the user");
-                println!("del will operate with the following syntax:");
-                println!("\n    - 'del [ITEM]'");
-                println!("\nNOTE: items can only be deleted with further user confirmation to avoid accidents");
-                println!("(directories with contents in them will cause Hopshell to panic if they interact with del");
-                println!("  fixing this is currently a work in progress)");
-            },
-            "help" => println!("help is a command that helps the user. Use 'help help' to see help about help."),
-            _other => println!("'{}' is not a valid command. Try again.", command_wargs[0])
-        }   //might use the Levenshtein function that I worked on earlier here ^
-    }
-    else {
-        println!("\nHopshell available expressions:");
-        println!("  kill: terminates Hopshell session");
-        println!("  cls|clear: clears the console display.");
-        println!("  echo|print: prints String to console");
-        println!("  math|calc|eval: calculates simple expression");
-        println!("  ls|dir|sdir: prints the current directory to console");
-        println!("  cd|cdir: changes the directory to the users specification");
-        println!("  newf|makf|makef: creates a new file named by the user");
-        println!("  newd|makd|maked: creates a new DIR named by the user");
-        println!("  del|rmv: deletes a specified DIR or file");
-        println!("\nuse 'help [command]' to see more information for a given prompt.");
-    }
 }
