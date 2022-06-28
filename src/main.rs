@@ -1,6 +1,6 @@
 mod functions;
 mod commands;
-const VERSION : &str = "authored by Bhop, 2022 :3 [Version 0.4.7]";
+const VERSION : &str = "authored by Bhop, 2022 :3 [Version 1.0.0]";
 
 fn main() {
     functions::new_bash(VERSION.to_string());
@@ -35,6 +35,6 @@ fn match_command(arg : &Vec<&str>) -> bool {
             "del" | "rmv" => commands::delete_item(expression), //deletes item
             "help" => commands::user_help(expression), //user docs
             _other => valid_command = false, //non-existent command
-        }
+        }   //might use Levenshtein here ^
     return valid_command;
 }

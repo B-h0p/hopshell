@@ -47,4 +47,5 @@ pub fn generate_files_vec(to_lowercase : bool) -> Vec<String> { //creates a vect
         let mut file : String = x.unwrap().file_name().to_str().unwrap().to_string();
         if to_lowercase {file = file.to_lowercase();}
         file_vec.push(file);}
-    return file_vec;}
+    return file_vec;
+}
