@@ -100,16 +100,16 @@ pub fn change_dir(dir : Vec<&str>) {
     else {println!("A directory is needed as an argument. Try again");}
 }
 
-pub fn new_item(filename : Vec<&str>, itype : &str) { //TODO -REFACTOR THIS TRASH
+pub fn new_item(filename : Vec<&str>, itype : &str) {
     if filename.len() != 0 {
-        let mut file_string : String = String::from("./"); //make cleaner TODO
+        let mut file_string : String = String::from("./");
         for x in filename {
             file_string.push_str(x);
             file_string.push_str(" ");}
         file_string.pop(); file_string = file_string.to_lowercase();
         let mut file_string_cleaned : String = file_string.clone();
-        file_string_cleaned.remove(0); file_string_cleaned.remove(0); //removes the './' - REALLY STUPID
-
+        file_string_cleaned.remove(0); file_string_cleaned.remove(0);
+            //removes the './' - stupid but whatever... it was optional anyways so feel free to delete the warning logic
         let file_vec : Vec<String> = functions::generate_files_vec(true);
         if !(file_vec.contains(&file_string_cleaned)) {
             if itype == "f" { //lots of semantics for this lol
