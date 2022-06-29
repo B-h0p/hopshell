@@ -42,8 +42,7 @@ pub fn user_help(command_wargs : Vec<&str>) {
                 println!("del will operate with the following syntax:");
                 println!("\n    - 'del [ITEM]'");
                 println!("\nNOTE: items can only be deleted with further user confirmation to avoid accidents");
-                println!("(directories with contents in them will cause Hopshell to panic if they interact with del");
-                println!("  fixing this is currently a work in progress)");
+                println!("  (Trying to delete an OS critical DIR will crash Hopshell - be careful!)");
             },
             "help" => println!("help is a command that helps the user. Use 'help help' to see help about help."),
             _other => println!("'{}' is not a valid command. Try again.", command_wargs[0])

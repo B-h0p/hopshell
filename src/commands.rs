@@ -155,8 +155,8 @@ pub fn delete_item(item : Vec<&str>) {
             }
             if user_confirmation == "y".to_string() {
                 if metadata(&file_to_delete).unwrap().is_dir() {
-                    fs::remove_dir(file_to_delete).expect("Err: Failed to delete directory");} //TO-FIX - match it
-                else {fs::remove_file(file_to_delete).expect("Err: Failed to delete file")} //TO-FIX
+                    fs::remove_dir_all(file_to_delete).expect("Err: Failed to delete directory");}
+                else {fs::remove_file(file_to_delete).expect("Err: Failed to delete file")}
                 println!("{} deleted.", item_name)
             }
         }
