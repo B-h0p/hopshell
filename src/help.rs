@@ -44,6 +44,13 @@ pub fn user_help(command_wargs : Vec<&str>) {
                 println!("\nNOTE: items can only be deleted with further user confirmation to avoid accidents");
                 println!("  (Trying to delete an OS critical DIR will crash Hopshell - be careful!)");
             },
+            "ifct" => {
+                println!("\nIFCT will return the inverted factorial of a given integer");
+                println!("for example: ");
+                println!("\n 720 -> 6");
+                println!("\nNOTE: ifct may use the '-g' arguement, which employs the gamma approximation");
+                println!("  for numbers without a clean factorial inversion");
+            }
             "help" => println!("help is a command that helps the user. Use 'help help' to see help about help."),
             _other => println!("'{}' is not a valid command. Try again.", command_wargs[0])
         }   //might use the Levenshtein function that I worked on earlier here ^
@@ -59,6 +66,7 @@ pub fn user_help(command_wargs : Vec<&str>) {
         println!("  newf|makf|makef: creates a new file named by the user");
         println!("  newd|makd|maked: creates a new DIR named by the user");
         println!("  del|rmv: deletes a specified DIR or file");
+        println!("  ifct: returns the inverted factorial of an integer");
         println!("\nuse 'help [command]' to see more information for a given prompt.");
     }
 }

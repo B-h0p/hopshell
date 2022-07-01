@@ -164,3 +164,28 @@ pub fn delete_item(item : Vec<&str>) {
     }
     else {println!("you need to specify an item to delete");}
 }
+
+pub fn invert_factorial(digit : String, gamma_check : bool) {
+    if digit == "".to_string() {println!("A digit is needed. Try again.");} //stupid edge case 
+    else if !(digit.parse::<u32>().is_ok()) {println!("'{}' is not a valid digit. Try Again.", digit);}
+    else {
+        let int_dig : u32 = digit.parse().unwrap();
+        if int_dig == 1 {println!("0 or 1");}
+        else if (int_dig > 479001600) || (int_dig == 0) {println!("{} is out of scope. Try Again.", digit);}
+        else { //valid number that can be inverted 
+            let mut increment : u32 = 1;
+            let mut sample : u32 = 1;
+            while sample < int_dig {
+                increment = increment + 1;
+                sample = sample * increment;}
+            if sample == int_dig {println!("{}", increment);}
+            else {
+                match gamma_check {
+                    false => {println!("{} has no inverted factorial. Have you tried using '-g'?", int_dig);},
+                    true => { let ans : (f32, u32) = functions::invert_gamma(int_dig);
+                              println!("{} ({} iterations)", ans.0, ans.1);}
+                }
+            }
+        }
+    }
+}

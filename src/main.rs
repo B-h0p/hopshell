@@ -1,7 +1,7 @@
 mod functions;
 mod commands;
 mod help;
-const VERSION : &str = "authored by Bhop, 2022 :3 [Version 1.1.2]";
+const VERSION : &str = "authored by Bhop, 2022 :3 [Version 1.2.0]";
 
 fn main() {
     functions::new_bash(VERSION.to_string());
@@ -35,6 +35,16 @@ fn match_command(arg : &Vec<&str>) -> bool {
             "newd" | "makd" | "maked" => commands::new_item(expression, "d"), //creates directory
             "del" | "rmv" => commands::delete_item(expression), //deletes item
             "help" => help::user_help(expression), //user docs
+            "ifct" => { //returns the inverted factorial value (e.g. 720 -> 6)
+                if expression.len() != 0 {
+                    let gamma_check : bool = expression[expression.len()-1].to_string().to_lowercase() == "-g".to_string();
+                    if gamma_check {expression.remove(expression.len()-1);} //-g is removed
+                    let mut numinp : String = String::from("");
+                    for x in expression {numinp.push_str(x);}
+                    commands::invert_factorial(numinp, gamma_check); //using a string instead of Vec<str> for code reusability
+                }
+                else {println!("A digit is needed. Try again.");}
+            },
             _other => valid_command = false, //non-existent command
         }   //might use Levenshtein here ^
     return valid_command;
