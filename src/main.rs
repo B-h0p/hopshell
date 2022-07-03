@@ -1,7 +1,7 @@
 mod functions;
 mod commands;
 mod help;
-const VERSION : &str = "authored by Bhop, 2022 :3 [Version 1.2.0]";
+const VERSION : &str = "authored by Bhop, 2022 :3 [Version 1.3.0]";
 
 fn main() {
     functions::new_bash(VERSION.to_string());
@@ -44,6 +44,11 @@ fn match_command(arg : &Vec<&str>) -> bool {
                     commands::invert_factorial(numinp, gamma_check); //using a string instead of Vec<str> for code reusability
                 }
                 else {println!("A digit is needed. Try again.");}
+            },
+            "find" => {
+                let case_insensitive : bool = expression[expression.len()-1].to_string().to_lowercase() == "-c".to_string();
+                if case_insensitive {expression.remove(expression.len()-1);} //-g is removed
+                commands::find_str(expression, case_insensitive)
             },
             _other => valid_command = false, //non-existent command
         }   //might use Levenshtein here ^

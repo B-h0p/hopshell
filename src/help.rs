@@ -50,7 +50,13 @@ pub fn user_help(command_wargs : Vec<&str>) {
                 println!("\n 720 -> 6");
                 println!("\nNOTE: ifct may use the '-g' arguement, which employs the gamma approximation");
                 println!("  for numbers without a clean factorial inversion");
-            }
+            },
+            "find" => {
+                println!("\nFIND will return specified Strings of text that are found in a given file");
+                println!("find will operate with the following syntax:");
+                println!("\n    - 'find [FILENAME] |MSG| [STRING]'");
+                println!("\nNOTE: find may use the '-c' argument, which will ignore case-sensitivity.");
+            },
             "help" => println!("help is a command that helps the user. Use 'help help' to see help about help."),
             _other => println!("'{}' is not a valid command. Try again.", command_wargs[0])
         }   //might use the Levenshtein function that I worked on earlier here ^
@@ -67,6 +73,7 @@ pub fn user_help(command_wargs : Vec<&str>) {
         println!("  newd|makd|maked: creates a new DIR named by the user");
         println!("  del|rmv: deletes a specified DIR or file");
         println!("  ifct: returns the inverted factorial of an integer");
+        println!("  find: returns extracts of specified text from a given file");
         println!("\nuse 'help [command]' to see more information for a given prompt.");
     }
 }

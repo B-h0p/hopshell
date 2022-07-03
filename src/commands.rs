@@ -189,3 +189,53 @@ pub fn invert_factorial(digit : String, gamma_check : bool) {
         }
     }
 }
+
+pub fn find_str(expression : Vec<&str>, case_insensitive : bool) {
+    const SPLITTER : &str = "|MSG|";
+    let mut match_found : bool = false;
+    if expression.contains(&SPLITTER) {
+        if (expression[0] != SPLITTER) &&
+        !((expression.iter().filter(|&x| x == &SPLITTER).count() == 1) && expression[expression.len()-1] == SPLITTER) {
+            let mut filename : String = String::from("./"); //first part must be part of filename
+                filename.push_str(expression[0]); filename.push_str(" ");
+            let mut message : String = String::from("");
+            let mut msg_token_found : bool = false;
+            for x in 1..expression.len() {
+                if msg_token_found {message.push_str(expression[x]); message.push_str(" ");}
+                else if expression[x] == SPLITTER {msg_token_found = true;}
+                else {filename.push_str(expression[x]); filename.push_str(" ");}
+            }
+            message.pop(); filename.pop();
+
+            if fs::metadata(&filename).is_ok() {
+                if !(metadata(&filename).unwrap().is_dir()) { //exists_check -> file_check
+                    let file_contents = fs::read_to_string(&filename).expect("ERR: couldnt fetch text");
+                    let split_file : Vec<&str> = (file_contents.split("\n")).collect(); //this is what we need
+                    for x in 0..split_file.len() {
+                        match case_insensitive { //I should of matched outside of the loop because this squares time-complexity :P
+                            true => {
+                                if split_file[x].to_string().to_lowercase().contains(&message.to_lowercase()) {
+                                    println!("Message '{}' found on line {}: ", message, x+1);
+                                    println!("{}", split_file[x]);
+                                    match_found = true;
+                                }
+                            },
+                            false => {
+                                if split_file[x].contains(&message) {
+                                    println!("Message '{}' found on line {}: ", message, x+1);
+                                    println!("{}", split_file[x]);
+                                    match_found = true;
+                                }
+                            }
+                        }
+                    }
+                    if !match_found {println!("No matches for '{}' were found in {}", message, filename);}
+                }
+                else {println!("Cannot read from Directory. Try Again");}
+            }
+            else {println!("File '{}' does not exist in this Directory. Try Again", filename);}
+        }
+        else {println!("ERR: '|MSG|' requires a matching file and/ or message. Try Again.");} //because of this err message
+    }
+    else {println!("|MSG| field required. Try Again.");}
+}
