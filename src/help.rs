@@ -51,7 +51,7 @@ pub fn user_help(command_wargs : Vec<&str>) {
                 println!("\nNOTE: ifct may use the '-g' arguement, which employs the gamma approximation");
                 println!("  for numbers without a clean factorial inversion");
             },
-            "find" => {
+            "find" | "srch" | "quer" => {
                 println!("\nFIND will return specified Strings of text that are found in a given file");
                 println!("find will operate with the following syntax:");
                 println!("\n    - 'find [FILENAME] |MSG| [STRING]'");
@@ -73,7 +73,7 @@ pub fn user_help(command_wargs : Vec<&str>) {
         println!("  newd|makd|maked: creates a new DIR named by the user");
         println!("  del|rmv: deletes a specified DIR or file");
         println!("  ifct: returns the inverted factorial of an integer");
-        println!("  find: returns extracts of specified text from a given file");
+        println!("  find|srch|quer: returns extracts of specified text from a given file");
         println!("\nuse 'help [command]' to see more information for a given prompt.");
     }
 }

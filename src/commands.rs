@@ -206,27 +206,16 @@ pub fn find_str(expression : Vec<&str>, case_insensitive : bool) {
                 else {filename.push_str(expression[x]); filename.push_str(" ");}
             }
             message.pop(); filename.pop();
-
             if fs::metadata(&filename).is_ok() {
                 if !(metadata(&filename).unwrap().is_dir()) { //exists_check -> file_check
                     let file_contents = fs::read_to_string(&filename).expect("ERR: couldnt fetch text");
                     let split_file : Vec<&str> = (file_contents.split("\n")).collect(); //this is what we need
                     for x in 0..split_file.len() {
-                        match case_insensitive { //I should of matched outside of the loop because this squares time-complexity :P
-                            true => {
-                                if split_file[x].to_string().to_lowercase().contains(&message.to_lowercase()) {
-                                    println!("Message '{}' found on line {}: ", message, x+1);
-                                    println!("{}", split_file[x]);
-                                    match_found = true;
-                                }
-                            },
-                            false => {
-                                if split_file[x].contains(&message) {
-                                    println!("Message '{}' found on line {}: ", message, x+1);
-                                    println!("{}", split_file[x]);
-                                    match_found = true;
-                                }
-                            }
+                        if (case_insensitive && split_file[x].to_string().to_lowercase().contains(&message.to_lowercase())) ||
+                        split_file[x].contains(&message) {
+                            println!("Message '{}' found on line {}: ", message, x+1);
+                            println!("{}", split_file[x]);
+                            match_found = true;
                         }
                     }
                     if !match_found {println!("No matches for '{}' were found in {}", message, filename);}

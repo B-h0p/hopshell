@@ -1,7 +1,7 @@
 mod functions;
 mod commands;
 mod help;
-const VERSION : &str = "authored by Bhop, 2022 :3 [Version 1.3.0]";
+const VERSION : &str = "authored by Bhop, 2022 :3 [Version 1.3.2]";
 
 fn main() {
     functions::new_bash(VERSION.to_string());
@@ -45,7 +45,7 @@ fn match_command(arg : &Vec<&str>) -> bool {
                 }
                 else {println!("A digit is needed. Try again.");}
             },
-            "find" => {
+            "find" |"srch"| "quer" => {
                 let case_insensitive : bool = expression[expression.len()-1].to_string().to_lowercase() == "-c".to_string();
                 if case_insensitive {expression.remove(expression.len()-1);} //-g is removed
                 commands::find_str(expression, case_insensitive)
