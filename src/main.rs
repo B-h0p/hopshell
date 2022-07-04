@@ -1,7 +1,7 @@
 mod functions;
 mod commands;
 mod help;
-const VERSION : &str = "authored by Bhop, 2022 :3 [Version 1.3.2]";
+const VERSION : &str = "authored by Bhop, 2022 :3 [Version 1.3.3]";
 
 fn main() {
     functions::new_bash(VERSION.to_string());

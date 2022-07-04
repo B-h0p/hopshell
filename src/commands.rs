@@ -82,20 +82,17 @@ pub fn list_dir() {
 
 pub fn change_dir(dir : Vec<&str>) {
     if dir.len() != 0 {
-        let old_dir : String = functions::get_dir();
         let mut dir_string : String = String::from("./");
         for x in dir {
             dir_string.push_str(x);
             dir_string.push_str(" ");
         }
-        dir_string.pop();
+        dir_string.pop(); dir_string = dir_string.to_lowercase();
         let is_ok = env::set_current_dir(&dir_string);
         match is_ok {
-            Err(_) => (), //ehh????
-            Ok(_) => ()
-        } //i guess this only prevents a warning but ok
-        let new_dir : String = functions::get_dir();
-        if old_dir == new_dir {println!("'{}' is not a valid directory. Try again", dir_string);}
+            Ok(_) => (),
+            Err(_) => println!("'{}' is not a valid directory. Try again", dir_string)
+        }
     }
     else {println!("A directory is needed as an argument. Try again");}
 }
@@ -171,8 +168,7 @@ pub fn invert_factorial(digit : String, gamma_check : bool) {
     else {
         let int_dig : u32 = digit.parse().unwrap();
         if int_dig == 1 {println!("0 or 1");}
-        else if (int_dig > 479001600) || (int_dig == 0) {println!("{} is out of scope. Try Again.", digit);}
-        else { //valid number that can be inverted 
+        else if (int_dig <= 479001600) && (int_dig != 0) { //valid number that can be inverted 
             let mut increment : u32 = 1;
             let mut sample : u32 = 1;
             while sample < int_dig {
@@ -183,10 +179,11 @@ pub fn invert_factorial(digit : String, gamma_check : bool) {
                 match gamma_check {
                     false => {println!("{} has no inverted factorial. Have you tried using '-g'?", int_dig);},
                     true => { let ans : (f32, u32) = functions::invert_gamma(int_dig);
-                              println!("{} ({} iterations)", ans.0, ans.1);}
+                              println!("~{} ({} iterations)", ans.0, ans.1);}
                 }
             }
         }
+        else {println!("{} is out of scope. Try Again.", digit);}
     }
 }
 
